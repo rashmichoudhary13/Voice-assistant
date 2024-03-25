@@ -36,6 +36,10 @@ def listen(request):
                 return JsonResponse({'status': 'stopped'})
             else:
                 return JsonResponse({'status': 'not_running'})
+        elif action == 'get_text':
+            # Get the recognized text
+            text = voice.get_recognized_text()
+            return JsonResponse({'text': text})
     return JsonResponse({'status': 'error'})
    
    
