@@ -61,25 +61,7 @@
           // $(this).text(isListening ? "Start Listening" : "Stop Listening");
         });
 
-        function getText() {
-          $.ajax({
-            url: "/listen/",
-            type: "GET",
-            data: { action: "get_text" },
-            success: function (response) {
-              $("#recognized-text").text(response.text);
-            },
-            error: function (xhr, status, error) {
-              console.error("Error:", error);
-            },
-            complete: function () {
-              setTimeout(getText, 1000); // Fetch text every second
-            },
-          });
-        }
-
-        // Start fetching recognized text
-        getText();
+  
       });
     </script>
   </body>

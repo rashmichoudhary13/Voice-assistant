@@ -8,11 +8,6 @@ import requests
 from bs4 import BeautifulSoup
 
 running = False
-recognized_text = "" 
-
-def get_recognized_text():
-    global recognized_text
-    return recognized_text
 
 def start_voice_assistant():
     global running
@@ -23,11 +18,9 @@ def start_voice_assistant():
 def stop_voice_assistant():
     global running
     running = False
-    recognized_text = ""
     print("running 1: ", running)
     
 def voice_assistant():
-    global recognized_text
     engine = pyttsx3.init("sapi5")
     voices = engine.getProperty("voices")
     engine.setProperty("voice", voices[0].id)
@@ -38,7 +31,6 @@ def voice_assistant():
         engine.runAndWait()
 
     def takeCommand():
-        global recognized_text 
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Listening.....")
@@ -49,11 +41,9 @@ def voice_assistant():
             print("Understanding..")
             query = r.recognize_google(audio, language='en-in')
             print(f"You Said: {query}\n")
-            recognized_text = query.lower()
             return query.lower()
         except Exception as e:
             print("Say that again")
-            recognized_text = ""
             return "None"
         
 

@@ -6,5 +6,4 @@ from voice_app import views
 urlpatterns = [
     path("",views.index, name="home"),
      path('listen/', views.listen, name='listen'),
-    # path("external",views.external, name="voice1")
 ]
