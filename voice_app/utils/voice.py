@@ -5,14 +5,19 @@ import wikipedia
 import webbrowser
 import datetime
 import requests
+
 from bs4 import BeautifulSoup
+import os
+import pyautogui
+from plyer import notification
+from pygame import mixer
 
 running = False
 
 def start_voice_assistant():
     global running
     running = True
-    voice_assistant() 
+    voice_assistant()
 
 #To stop the execution of this script
 def stop_voice_assistant():
@@ -93,6 +98,63 @@ def voice_assistant():
                     speak("Perfect, sir")
                 elif "thank you" in query:
                     speak("You are welcome, sir")
+                    
+                elif "pause" in query:
+                    pyautogui.press("k")
+                    speak("video paused")
+                elif "play" in query:
+                    pyautogui.press("k")
+                    speak("video played")
+                elif "mute" in query:
+                    pyautogui.press("m")
+                    speak("video muted")
+
+                elif "volume up" in query:
+                    from keyboard import volumeup
+                    speak("Turning volume up,sir")
+                    volumeup()
+                elif "volume down" in query:
+                    from keyboard import volumedown
+                    speak("Turning volume down, sir")
+                    volumedown()
+
+                
+                elif "open" in query:
+                    from .Dictapp import openappweb
+                    openappweb(query)
+                elif "close" in query:
+                    from .Dictapp import closeappweb
+                    closeappweb(query)
+
+                
+                elif "remember that" in query:
+                    rememberMessage = query.replace("remember that", "")
+                    rememberMessage = rememberMessage.replace("jarvis", "")  # Corrected this line
+                    speak("You told me to " + rememberMessage)  # Added space after 'to'
+                    remember = open("Remember.txt", "a")
+                    remember.write(rememberMessage + "\n")  # Added a newline after each message
+                    remember.close()
+                elif "what do you remember" in query:
+                    remember = open("Remember.txt", "r")
+                    speak("You told me to " + remember.read())  # Added space after 'to'
+                    remember.close()
+
+                elif "screenshot" in query:
+                     import pyautogui #pip install pyautogui
+                     im = pyautogui.screenshot()
+                     im.save("ss.jpg")
+
+                elif "click my photo" in query:
+                        pyautogui.press("super")
+                        pyautogui.typewrite("camera")
+                        pyautogui.press("enter")
+                        pyautogui.sleep(2)
+                        speak("SMILE")
+                        pyautogui.press("enter")
+
+                elif 'type' in query:
+                    query = query.replace("type","")
+                    pyautogui.typewrite(f"{query}",0.1)
 
                 elif "temperature" in query:
                     search = "temperature in Mumbai"
@@ -112,6 +174,62 @@ def voice_assistant():
                 elif "the time" in query:
                     strTime = datetime.datetime.now().strftime("%H:%M")
                     speak(f"Sir, the time is {strTime}")
+                    
+                elif "calculate" in query:
+                    from Calculatenumbers import WolfRamAlpha
+                    from Calculatenumbers import Calc
+                    query = query.replace("calculate","")
+                    query = query.replace("jarvis","")
+                    Calc(query)
+
+                elif "shutdown the system" in query:
+                    speak("Are You sure you want to shutdown")
+                    shutdown = input("Do you wish to shutdown your computer? (yes/no)")
+                    if shutdown == "yes":
+                        os.system("shutdown /s /t 1")
+
+                    elif shutdown == "no":
+                        break
+
+                elif "schedule my day" in query:
+                    tasks = [] #Empty list 
+                    speak("Do you want to clear old tasks (Plz speak YES or NO)")
+                    query = takeCommand().lower()
+                    if "yes" in query:
+                        file = open("tasks.txt","w")
+                        file.write(f"")
+                        file.close()
+                        no_tasks = int(input("Enter the no. of tasks :- "))
+                        i = 0
+                        for i in range(no_tasks):
+                            tasks.append(input("Enter the task :- "))
+                            file = open("tasks.txt","a")
+                            file.write(f"{i}. {tasks[i]}\n")
+                            file.close()
+                    elif "no" in query:
+                        i = 0
+                        no_tasks = int(input("Enter the no. of tasks :- "))
+                        for i in range(no_tasks):
+                            tasks.append(input("Enter the task :- "))
+                            file = open("tasks.txt","a")
+                            file.write(f"{i}. {tasks[i]}\n")
+                            file.close()
+
+                    elif "show my schedule" in query:
+                        file = open("tasks.txt","r")
+                        content = file.read()
+                        file.close()
+                        mixer.init()
+                        mixer.music.load("notification.mp3.wav")
+                        mixer.music.play()
+                        notification.notify(
+                            title = "My schedule :-",
+                            message = content,
+                            timeout = 15
+                            )
+                elif "finally sleep" in query:
+                    speak("Going to sleep,sir")
+                    exit()
 
                 else:
                     searchGoogle(query)
