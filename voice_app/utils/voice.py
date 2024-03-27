@@ -5,6 +5,7 @@ import wikipedia
 import webbrowser
 import datetime
 import requests
+import wolframalpha
 
 from bs4 import BeautifulSoup
 import os
@@ -79,8 +80,53 @@ def voice_assistant():
             print(results)
             speak(results)
 
+    def greetMe():
+        hour = int(datetime.datetime.now().hour)
+        if hour >= 0 and hour <= 12:
+            print("Print 1")
+            speak("Good Morning, sir")
+        elif hour > 12 and hour <= 18:
+            print("Print 2")
+            speak("Good Afternoon, sir")
+        else:
+            print("Print 3")
+            speak("Good Evening, sir")
+            
+        print("Print 4")
+        speak("Please tell me, How can I help you ?")
+
+    def WolfRamAlpha(query):
+        apikey = "VQRRYV-WJ8UL76UQL"  # Replace "YOUR_API_KEY_HERE" with your actual API key
+        requester = wolframalpha.Client(apikey)
+        requested = requester.query(query)
+
+        try:
+            answer = next(requested.results).text
+            return answer
+        except StopIteration:
+            return "Sorry, I couldn't find the answer."
+
+    def Calc(query):
+        Term = str(query)
+        Term = Term.lower()  # Convert the query to lowercase for case insensitivity
+        Term = Term.replace("jarvis", "")
+        Term = Term.replace("multiply", "*")
+        Term = Term.replace("plus", "+")
+        Term = Term.replace("minus", "-")
+        Term = Term.replace("divide", "/")
+
+        try:
+            result = WolfRamAlpha(Term)
+            print(result)
+            speak(result)
+        except Exception as e:
+            print(f"Error: {e}")
+            speak("Sorry, I encountered an error while processing your request.")
+
+
     while running:
         print("running 3: ", running)
+        greetMe()
         query = takeCommand()
         if "hello" in query:
             speak("Yes sir, How can I assist you?")
@@ -176,8 +222,7 @@ def voice_assistant():
                     speak(f"Sir, the time is {strTime}")
                     
                 elif "calculate" in query:
-                    from Calculatenumbers import WolfRamAlpha
-                    from Calculatenumbers import Calc
+                    
                     query = query.replace("calculate","")
                     query = query.replace("jarvis","")
                     Calc(query)
