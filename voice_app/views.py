@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from threading import Thread
 from .utils import voice
-
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -20,6 +19,7 @@ def listen(request):
         action = request.GET.get('action')
 
         if action == 'start':
+          
             if voice_assistant_thread is None or not voice_assistant_thread.is_alive():
                 # Start voice assistant in a separate thread
                 voice_assistant_thread = Thread(target=voice.start_voice_assistant)

@@ -20,6 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('voice_app.urls')),
-    path('listen/',include('voice_app.urls'))
-    # path('external',include('voice_app.urls'))
+    path('listen/',include('voice_app.urls')),
 ]

@@ -16,6 +16,7 @@ body{
   border-radius: 46%;
   background: linear-gradient(#14ffe9,#ffeb3b,#ff00e0);
   animation: animate 0.6s linear infinite;
+  margin-left:-97px;
 }
 .loader span{
     position: absolute;
@@ -97,7 +98,7 @@ body{
     height: 82px;
     border-radius: 50%;
     background: #7d3081;
-    margin-left: 90px;
+    margin-left: -5px;
     box-shadow: 0 0 20px 20px #472f4b;
 }
 button{

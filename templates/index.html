@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Voice Assistant</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/wave.css" />
     <link
       href="https://unpkg.com/css.gg@2.0.0/icons/css/mic.css"
       rel="stylesheet"
@@ -18,51 +19,27 @@
       <span></span>
       <span></span>
     </div>
+
     <button class="mic-shadow" id="toggle-listen"></button>
-    <i class="gg-mic micfont"></i>
+    <i class="gg-mic micfont" id="mic-display"></i>
+
+    <div id="sound">
+    <div class="sound-wave">
+      <span class="stroke"></span>
+      <span class="stroke"></span>
+      <span class="stroke"></span>
+      <span class="stroke"></span>
+      <span class="stroke"></span>
+    </div>
+  </div>
+
     <div class="position">
       <div id="recognized-text"></div>
     </div>
 
     <!-- To toggle the button status -->
-    <script>
-      $(document).ready(function () {
-        var isListening = false;
-
-        $("#toggle-listen").click(function () {
-          if (!isListening) {
-            // Start listening
-            $.ajax({
-              url: "/listen/",
-              type: "GET",
-              data: { action: "start" },
-              success: function (response) {
-                $("#recognized-text").text(response.text);
-              },
-              error: function (xhr, status, error) {
-                console.error("Error:", error);
-              },
-            });
-          } else {
-            // Stop listening
-            $.ajax({
-              url: "/listen/",
-              type: "GET",
-              data: { action: "stop" },
-              success: function (response) {
-                $("#recognized-text").text(""); // Clear text
-              },
-              error: function (xhr, status, error) {
-                console.error("Error:", error);
-              },
-            });
-          }
-          isListening = !isListening; // Toggle listening state
-          // $(this).text(isListening ? "Start Listening" : "Stop Listening");
-        });
-
-  
-      });
+    <script src="../static/main.js">
+      
     </script>
   </body>
 </html>
