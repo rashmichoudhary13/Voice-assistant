@@ -6,14 +6,14 @@ from time import sleep
 
 engine = pyttsx3.init("sapi5")
 voices = engine.getProperty("voices")
-engine.setProperty("voice", voices[0].id)
+engine.setProperty("voice", voices[1].id)
 engine.setProperty("rate",200)
 
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
 
-dictapp = {"command prompt":"cmd","paint":"mspaint","word":"winword","excel":"excel","chrome":"chrome","vscode":"code","powerpoint":"powerpnt","firefox": "firefox"}
+dictapp = {"command prompt":"cmd","paint":"mspaint","word":"winword","excel":"excel","chrome":"chrome","vscode":"code","powerpoint":"powerpnt","firefox": "firefox","notepad":"notepad"}
 
 def openappweb(query):
     speak("Launching, sir")

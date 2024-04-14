@@ -6,12 +6,17 @@ import webbrowser
 import datetime
 import requests
 import wolframalpha
+import pyautogui
+
 
 from bs4 import BeautifulSoup
 import os
-import pyautogui
+
+
 from plyer import notification
 from pygame import mixer
+
+
 
 running = False
 
@@ -27,10 +32,11 @@ def stop_voice_assistant():
     print("running 1: ", running)
     
 def voice_assistant():
+    global pyautogui
     engine = pyttsx3.init("sapi5")
     voices = engine.getProperty("voices")
-    engine.setProperty("voice", voices[0].id)
-    engine.setProperty("rate", 170)
+    engine.setProperty("voice", voices[1].id)
+    engine.setProperty("rate", 180)
 
     def speak(audio):
         engine.say(audio)
@@ -123,13 +129,13 @@ def voice_assistant():
             print(f"Error: {e}")
             speak("Sorry, I encountered an error while processing your request.")
 
-
+   
     while running:
         print("running 3: ", running)
-        greetMe()
+        speak("Hi I am Serena your Voice Assistant")
         query = takeCommand()
         if "hello" in query:
-            speak("Yes sir, How can I assist you?")
+            greetMe()
             while running:
                 print("running 4: ", running)
                 query = takeCommand()
@@ -155,12 +161,12 @@ def voice_assistant():
                     pyautogui.press("m")
                     speak("video muted")
 
-                elif "volume up" in query:
-                    from keyboard import volumeup
+                elif "volume boost" in query:
+                    from .keyboard import volumeup
                     speak("Turning volume up,sir")
                     volumeup()
                 elif "volume down" in query:
-                    from keyboard import volumedown
+                    from .keyboard import volumedown
                     speak("Turning volume down, sir")
                     volumedown()
 
@@ -201,6 +207,9 @@ def voice_assistant():
                 elif 'type' in query:
                     query = query.replace("type","")
                     pyautogui.typewrite(f"{query}",0.1)
+
+               
+
 
                 elif "temperature" in query:
                     search = "temperature in Mumbai"
@@ -260,18 +269,39 @@ def voice_assistant():
                             file.write(f"{i}. {tasks[i]}\n")
                             file.close()
 
+                    # elif "show my schedule" in query:
+                    #     file = open("tasks.txt","r")
+                    #     content = file.read()
+                    #     file.close()
+                    #     mixer.init()
+                    #     mixer.music.load("notification.mp3.wav")
+                    #     mixer.music.play()
+                    #     notification.notify(
+                    #         title = "My schedule :-",
+                    #         message = content,
+                    #         timeout = 15
+                    #         )
+                        
+
                     elif "show my schedule" in query:
-                        file = open("tasks.txt","r")
-                        content = file.read()
-                        file.close()
-                        mixer.init()
-                        mixer.music.load("notification.mp3.wav")
-                        mixer.music.play()
-                        notification.notify(
-                            title = "My schedule :-",
-                            message = content,
-                            timeout = 15
-                            )
+                            try:
+                                with open("tasks.txt", "r") as file:
+                                    content = file.read()
+                                    if content.strip():  # Check if the file is not empty
+                                        mixer.init()
+                                        mixer.music.load("notification.mp3.wav")
+                                        mixer.music.play()
+                                        notification.notify(
+                                            title="My schedule",
+                                            message=content,
+                                            timeout=15
+                                        )
+                                        speak("Your schedule has been notified.")
+                                    else:
+                                        speak("Your schedule is empty.")
+                            except FileNotFoundError:
+                                speak("Sorry, I couldn't find your schedule.")
+
                 elif "finally sleep" in query:
                     speak("Going to sleep,sir")
                     exit()
