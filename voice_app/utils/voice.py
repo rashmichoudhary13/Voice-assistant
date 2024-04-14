@@ -13,6 +13,8 @@ from bs4 import BeautifulSoup
 from plyer import notification
 from pygame import mixer
 
+
+
 running = False
 
 def start_voice_assistant():
@@ -126,11 +128,12 @@ def voice_assistant():
             print(f"Error: {e}")
             speak("Sorry, I encountered an error while processing your request.")
 
-
+   
     while running:
         print("running 3: ", running)
-        greetMe()
+        speak("Hi I am Serena your Voice Assistant")
         query = takeCommand()
+        greetMe()
         while running:
                 print("running 4: ", running)
                 query = takeCommand()

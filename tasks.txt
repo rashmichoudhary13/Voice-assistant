@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 0. study
 1. play
 2. coding
 0. games
 1. singing
+=======
+0. wake up early
+>>>>>>> 8c8c6cbc0258254e24f4e92748ebd04cdd69dcbe
