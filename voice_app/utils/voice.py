@@ -6,10 +6,10 @@ import webbrowser
 import datetime
 import requests
 import wolframalpha
+import pyautogui
+import os
 
 from bs4 import BeautifulSoup
-import os
-import pyautogui
 from plyer import notification
 from pygame import mixer
 
@@ -27,10 +27,11 @@ def stop_voice_assistant():
     print("running 1: ", running)
     
 def voice_assistant():
+    global pyautogui  
     engine = pyttsx3.init("sapi5")
     voices = engine.getProperty("voices")
     engine.setProperty("voice", voices[0].id)
-    engine.setProperty("rate", 170)
+    engine.setProperty("rate", 160)
 
     def speak(audio):
         engine.say(audio)
@@ -47,9 +48,11 @@ def voice_assistant():
             print("Understanding..")
             query = r.recognize_google(audio, language='en-in')
             print(f"You Said: {query}\n")
-            return query.lower()
+            query_low = query.lower()
+            return query_low
         except Exception as e:
             print("Say that again")
+            speak("Sorry, Can you say that again.")
             return "None"
         
 
@@ -66,7 +69,7 @@ def voice_assistant():
         if "youtube" in query:
             speak("This is what I found for your search!")
             query = query.replace("youtube", "")
-            web = "https://www.youtube.com/results?search_query=" + query
+            web = "https://www.youtube.com/" + query
             webbrowser.open(web)
             pywhatkit.playonyt(query)
             speak("Done, Sir")
@@ -128,9 +131,7 @@ def voice_assistant():
         print("running 3: ", running)
         greetMe()
         query = takeCommand()
-        if "hello" in query:
-            speak("Yes sir, How can I assist you?")
-            while running:
+        while running:
                 print("running 4: ", running)
                 query = takeCommand()
                 if "go to sleep" in query:
@@ -144,7 +145,15 @@ def voice_assistant():
                     speak("Perfect, sir")
                 elif "thank you" in query:
                     speak("You are welcome, sir")
-                    
+                elif "what can you do" in query:
+                    speak("I can do most of the things Such as, I can open apps, can do arithmetic operation, can search anything for you on google and youtube. I can also control volume.")
+                elif "that's all" in query:
+                    speak("I can also schedule your important meetings and all and can also click your photo.")
+                elif "who made you" in query:
+                    speak("I was created by Rashmi, Aryan and Pranjal.")
+                elif "what modules do you use" in query:
+                    speak("Modules that I use are pyttsx3, speech_recognition, pywhatkit, wikipedia, webbrowser, datetime, requests, wolframalpha, bs4 (BeautifulSoup), os, pyautogui, plyer, pygame")
+                            
                 elif "pause" in query:
                     pyautogui.press("k")
                     speak("video paused")
@@ -156,11 +165,11 @@ def voice_assistant():
                     speak("video muted")
 
                 elif "volume up" in query:
-                    from keyboard import volumeup
+                    from .keyboard import volumeup
                     speak("Turning volume up,sir")
                     volumeup()
                 elif "volume down" in query:
-                    from keyboard import volumedown
+                    from .keyboard import volumedown
                     speak("Turning volume down, sir")
                     volumedown()
 
@@ -173,7 +182,7 @@ def voice_assistant():
                     closeappweb(query)
 
                 
-                elif "remember that" in query:
+                elif "remember that " in query:
                     rememberMessage = query.replace("remember that", "")
                     rememberMessage = rememberMessage.replace("jarvis", "")  # Corrected this line
                     speak("You told me to " + rememberMessage)  # Added space after 'to'
@@ -189,12 +198,13 @@ def voice_assistant():
                      import pyautogui #pip install pyautogui
                      im = pyautogui.screenshot()
                      im.save("ss.jpg")
+                     speak("Screenshot taken")
 
-                elif "click my photo" in query:
+                elif "click my photo" in query or "take a picture" in query:
                         pyautogui.press("super")
                         pyautogui.typewrite("camera")
                         pyautogui.press("enter")
-                        pyautogui.sleep(2)
+                        pyautogui.sleep(5)
                         speak("SMILE")
                         pyautogui.press("enter")
 
@@ -202,22 +212,17 @@ def voice_assistant():
                     query = query.replace("type","")
                     pyautogui.typewrite(f"{query}",0.1)
 
-                elif "temperature" in query:
+                elif "temperature" in query or "weather" in query:
                     search = "temperature in Mumbai"
                     url = f"https://www.google.com/search?q={search}"
                     r = requests.get(url)
-                    data = BeautifulSoup(r.text, "html.parser")
-                    temp = data.find("div", class_="BNeawe").text
-                    speak(f"current{search} is {temp}")
-                elif "weather" in query:
-                    search = "temperature in Mumbai "
-                    url = f"https://www.google.com/search?q={search}"
-                    r = requests.get(url)
-                    data = BeautifulSoup(r.text, "html.parser")
-                    temp = data.find("div", class_="BNeawe").text
-                    speak(f"current{search} is {temp}")
+                    soup = BeautifulSoup(r.text, "html.parser")
+                    temp_div = soup.find("div", class_="BNeawe").text
+                    print("Temp is: ",temp_div)
+                    speak(f"Current {search} is {temp_div}")
 
-                elif "the time" in query:
+
+                elif "what's the time now" in query or "tell me the time" in query :
                     strTime = datetime.datetime.now().strftime("%H:%M")
                     speak(f"Sir, the time is {strTime}")
                     
@@ -260,21 +265,23 @@ def voice_assistant():
                             file.write(f"{i}. {tasks[i]}\n")
                             file.close()
 
-                    elif "show my schedule" in query:
+                elif "show my schedule" in query:
+                        speak("opening your schedule")
                         file = open("tasks.txt","r")
                         content = file.read()
                         file.close()
                         mixer.init()
-                        mixer.music.load("notification.mp3.wav")
+                        mixer.music.load("static/notification.mp3.wav")
                         mixer.music.play()
                         notification.notify(
                             title = "My schedule :-",
                             message = content,
                             timeout = 15
                             )
-                elif "finally sleep" in query:
+                elif "sleep" in query:
                     speak("Going to sleep,sir")
                     exit()
+                    
 
                 else:
                     searchGoogle(query)
@@ -286,3 +293,4 @@ if __name__ == "__main__":
     if running:
         voice_assistant()
 
+ 
