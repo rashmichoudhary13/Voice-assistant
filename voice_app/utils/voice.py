@@ -13,8 +13,6 @@ from bs4 import BeautifulSoup
 from plyer import notification
 from pygame import mixer
 
-
-
 running = False
 
 def start_voice_assistant():
@@ -26,13 +24,13 @@ def start_voice_assistant():
 def stop_voice_assistant():
     global running
     running = False
-    print("running 1: ", running)
+    # print("running 1: ", running)
     
 def voice_assistant():
     global pyautogui  
     engine = pyttsx3.init("sapi5")
     voices = engine.getProperty("voices")
-    engine.setProperty("voice", voices[0].id)
+    engine.setProperty("voice", voices[1].id)
     engine.setProperty("rate", 160)
 
     def speak(audio):
@@ -88,16 +86,16 @@ def voice_assistant():
     def greetMe():
         hour = int(datetime.datetime.now().hour)
         if hour >= 0 and hour <= 12:
-            print("Print 1")
+            # print("Print 1")
             speak("Good Morning, sir")
         elif hour > 12 and hour <= 18:
-            print("Print 2")
+            # print("Print 2")
             speak("Good Afternoon, sir")
         else:
-            print("Print 3")
+            # print("Print 3")
             speak("Good Evening, sir")
             
-        print("Print 4")
+        # print("Print 4")
         speak("Please tell me, How can I help you ?")
 
     def WolfRamAlpha(query):
@@ -130,12 +128,11 @@ def voice_assistant():
 
    
     while running:
-        print("running 3: ", running)
+        # print("running 3: ", running)
         speak("Hi I am Serena your Voice Assistant")
-        query = takeCommand()
         greetMe()
         while running:
-                print("running 4: ", running)
+                # print("running 4: ", running)
                 query = takeCommand()
                 if "go to sleep" in query:
                     speak("Ok sir, You can call me anytime")
@@ -216,15 +213,21 @@ def voice_assistant():
                     pyautogui.typewrite(f"{query}",0.1)
 
                 elif "temperature" in query or "weather" in query:
-                    search = "temperature in Mumbai"
-                    url = f"https://www.google.com/search?q={search}"
-                    r = requests.get(url)
-                    soup = BeautifulSoup(r.text, "html.parser")
-                    temp_div = soup.find("div", class_="BNeawe").text
-                    print("Temp is: ",temp_div)
-                    speak(f"Current {search} is {temp_div}")
+                    query = query.replace("temperature","")
+                    query = query.replace("weather","")
+                    api_key = '4d8f68f3a047a69766809f45bf6cebba'
+                    url = f"http://api.openweathermap.org/data/2.5/weather?q={query}&appid={api_key}&units=metric"
+                    weather_data = requests.get(url)
+                    
+                    if weather_data.json()['cod'] == '404':
+                        speak("No City Found")
+                    else:
+                        weather = weather_data.json()['weather'][0]['main']
+                        temp = round(weather_data.json()['main']['temp'])
 
-
+                        speak(f"The weather in {query} is: {weather}")
+                        speak(f"The temperature in {query} is: {temp}ºF")
+                        
                 elif "what's the time now" in query or "tell me the time" in query :
                     strTime = datetime.datetime.now().strftime("%H:%M")
                     speak(f"Sir, the time is {strTime}")

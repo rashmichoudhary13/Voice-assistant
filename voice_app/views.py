@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from threading import Thread
 from .utils import voice
+from django.http import HttpResponse
+import pyscript
 from django.views.decorators.csrf import csrf_exempt
 
 

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from voice_app import views
+
 # from .views import listen_to_voice
 
 urlpatterns = [

@@ -1,3 +1,6 @@
+
+//To toggle the button status 
+
 $(document).ready(function () {
     var isListening = false;
 
@@ -19,7 +22,7 @@ $(document).ready(function () {
             console.error("Error:", error);
           },
         });
-      } else {
+       } else {
         // Stop listening
         $("#mic-display").show(); // Show the microphone icon
         $("#sound").hide(); // Hide the wave animation container
